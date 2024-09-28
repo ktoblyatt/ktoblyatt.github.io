@@ -42,7 +42,7 @@
         const schemaValue = getQueryParam('Schema');
         if (schemaValue) {
             const pow = generatePoW(schemaValue);
-            document.getElementById('result').innerText = `Proof of Work: ${pow}`;
+            document.getElementById('result').innerHTML = `You POW: ${pow}`; // Обновляем текст с новым форматом
         }
 
         // Обработка отправки формы
@@ -50,7 +50,7 @@
             event.preventDefault(); // Предотвращаем перезагрузку страницы
             const data = document.getElementById('schema').value;
             const pow = generatePoW(data);
-            document.getElementById('result').innerText = `Proof of Work: ${pow}`;
+            document.getElementById('result').innerHTML = `You POW: ${pow}`; // Обновляем текст с новым форматом
         });
     </script>
 </body>

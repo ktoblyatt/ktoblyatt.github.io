@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proof of Work</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+</head>
+<body>
+    <h1>Proof of Work Calculator</h1>
+    <form id="powForm">
+        <label for="schema">Schema:</label>
+        <input type="text" id="schema" name="Schema" required placeholder="1:3:1727549924:wgni::VcyV1uuDsAxnXeiY:" />
+        <button type="submit">Calculate PoW</button>
+    </form>
+    <p id="result"></p>
+
+    <script>
+        // Функция для генерации Proof of Work
+        function generatePoW(data) {
+            const parts = data.split(':');
+            const zeroesCount = parseInt(parts[1], 10); // Получаем количество нулей
+            const zeroes = '0'.repeat(zeroesCount); // Создаем строку из нулей
+            
+            for (let pow = 1; pow < Number.MAX_SAFE_INTEGER; pow++) {
+                const input = data + pow; // Формируем входные данные
+                const digest = CryptoJS.SHA3(input, { outputLength: 512 }).toString(); // Получаем хеш в шестнадцатеричном формате
+
+                if (digest.startsWith(zeroes)) {
+                    return pow; // Возвращаем найденное значение
+                }
+            }
+        }
+
+        // Функция для получения параметров из URL
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // Получаем значение Schema из URL и вычисляем PoW
+        const schemaValue = getQueryParam('Schema');
+        if (schemaValue) {
+            const pow = generatePoW(schemaValue);
+            document.getElementById('result').innerText = `Proof of Work: ${pow}`;
+        }
+
+        // Обработка отправки формы
+        document.getElementById('powForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Предотвращаем перезагрузку страницы
+            const data = document.getElementById('schema').value;
+            const pow = generatePoW(data);
+            document.getElementById('result').innerText = `Proof of Work: ${pow}`;
+        });
+    </script>
+</body>
+</html>

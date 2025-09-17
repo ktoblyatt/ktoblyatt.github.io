@@ -1,0 +1,290 @@
+
+
+<!--app/apps/sub_key/templates/keys.html-->
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Vless VPN Keys</title>
+</head>
+<body>
+<style>/* app/apps/sub_key/templates/static/css/style.css */
+
+/* Общий фон и выравнивание */
+body {
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    background: #151625;
+    background: linear-gradient(90deg,rgba(17, 42, 25, 1) 0%, rgba(33, 39, 64, 1) 35%, rgba(0, 8, 51, 1) 100%);
+      startColorstr="#151625",
+      endColorstr="#485785",
+      GradientType=1
+    )
+    min-height: 100vh;
+    margin: 0;
+    padding: 10px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Логотип */
+.logo img {
+    width: 150px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+/* Заголовок */
+h2 {
+    color: #e7e3e3;
+    font-size: 22px;
+    margin-bottom: 2px;
+}
+
+h3 {
+    color: #e7e3e3;
+    font-size: 20px;
+    margin-bottom: 2px;
+}
+
+/* Блок ключа */
+.key {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+/* Блок информации */
+.info {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    color: #e7e3e3;
+    font-size: 18px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.info p {
+    margin: 8px 0;
+}
+
+/* Блок информации */
+.info2 {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    color: #e7e3e3;
+    font-size: 18px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+
+.info strong {
+    color: #d8dce8;
+}
+
+
+/* Эмодзи флага */
+.flag {
+    margin-right: 25px;
+    font-size: 40px; /* флаг делаем крупнее */
+}
+
+/* Поле ввода ключа */
+input {
+    width: 500px;
+    padding: 14px 18px;
+    font-size: 16px;
+    border: none;
+    border-radius: 12px;
+    background-color: #ffffff;
+    color: #333;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    outline: none;
+    transition: 0.3s;
+}
+
+.main-key-input {
+    width: 300px;
+    padding: 10px 14px;
+    font-size: 14px;
+}
+
+/* Фокус на input */
+input:focus {
+    transform: scale(1.025);
+    box-shadow: 0 0 0 3px #2a4ca3;
+}
+
+/* Кнопка копирования */
+button {
+    margin-left: 12px;
+    padding: 14px 22px;
+    font-size: 15px;
+    background: #2a4ca3;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+/* Наведение на кнопку */
+button:hover {
+    background: #5548c8;
+    transform: scale(1.10);
+}
+
+/* Анимация кнопки после копирования */
+button.copied {
+    background: #28a745 !important;
+}
+
+/* Блок поддержки */
+.support {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.support-btn {
+    background: #2a4ca3;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 14px 28px;
+    border-radius: 12px;
+    box-shadow: none;
+    transition: all 0.39s ease;
+    display: inline-block;
+}
+
+.support-btn:hover {
+    background: #5548c8;
+    transform: translateY(-2px) scale(1.035);
+    box-shadow: none;
+}</style>
+
+<!--<div class="logo">-->
+<!--    <img src="/static/img/logo.png" alt="HD VPN" width="150">-->
+<!--</div>-->
+
+<!-- Блок информации о балансе -->
+<div class="info">
+    <p>💰 Баланс: <strong>1394.0</strong> ₽</p>
+    <p>📅 Остаток дней: <strong>278</strong></p>
+    <p>📊 Израсходовано трафика: <strong>10.42</strong> ГБ</p>
+    <div class="support">
+    <a href="https://t.me/VlesVPNbot" target="_blank" class="support-btn">
+        ✉️ Написать в Поддержку
+    </a>
+</div>
+</div>
+
+<h2>Основной ключ</h2>
+<div class="info2">
+    <input class="key-input" readonly value="https://key.vlesvpn.ru/F4YSGF">
+    <button onclick="copyKey(this)">Copy</button>
+</div>
+
+
+<!---->
+<!--<h2>Ваши ключи</h2>-->
+<!---->
+<p></p>
+<h3>Ключи для продвинутых пользователей</h3>
+<p></p>
+
+<!-- Ключи -->
+
+<div class="key">
+    
+    <span class="flag">🇩🇪</span>
+    
+    <input class="key-input" readonly value="vless://id795323250@194.107.126.214:443?flow=xtls-rprx-vision&amp;fp=random&amp;pbk=ZDt6EWhg4cY0COuFOQn6PUFGdKIaTqtLyFkMDdZj8nE&amp;security=reality&amp;sid=d453476a&amp;sni=vk.com&amp;spx=%2FnBMTc3831A6Cy9h&amp;type=tcp#1 | Германия 🇩🇪 Рекомендуем ✅">
+    <button onclick="copyKey(this)">Copy</button>
+</div>
+
+<div class="key">
+    
+    <span class="flag">🇳🇱</span>
+    
+    <input class="key-input" readonly value="vless://id795323250@193.178.172.233:443?flow=xtls-rprx-vision&amp;fp=random&amp;pbk=CndBb2Fbp7kn34tjcf_pDov8HFnt3RTQKfCEnoxp70Y&amp;security=reality&amp;sid=1b&amp;sni=vk.com&amp;spx=%2FwRKVDAnoNtfmWD8&amp;type=tcp#4 | Нидерланды 🇳🇱">
+    <button onclick="copyKey(this)">Copy</button>
+</div>
+
+<div class="key">
+    
+    <span class="flag">🇷🇺</span>
+    
+    <input class="key-input" readonly value="vless://id795323250@31.128.47.104:443?flow=xtls-rprx-vision&amp;fp=chrome&amp;pbk=7ysbZ2ahzaNFe3hw1TzmA3421nNEGUOeKm0jQyK-HGI&amp;security=reality&amp;sid=abd1806481&amp;sni=www.rutube.ru&amp;spx=%2F3DZomX1jLzaxHVG&amp;type=tcp#8 | РФ | YouTube без рекламы 🇷🇺">
+    <button onclick="copyKey(this)">Copy</button>
+</div>
+
+<div class="key">
+    
+    <span class="flag">🇫🇮</span>
+    
+    <input class="key-input" readonly value="vless://id795323250@194.34.132.39:443?flow=xtls-rprx-vision&amp;fp=random&amp;pbk=yDwHL93MSZMTVyDy0OhZu-NIlgNA9amsi_t1P8Sla0Q&amp;security=reality&amp;sid=f8&amp;sni=www.vk.com&amp;spx=%2FdGimsYN742zz3IR&amp;type=tcp#2 | Финляндия 🇫🇮">
+    <button onclick="copyKey(this)">Copy</button>
+</div>
+
+<div class="key">
+    
+    <span class="flag">🇺🇸</span>
+    
+    <input class="key-input" readonly value="vless://id795323250@95.181.173.153:443?flow=xtls-rprx-vision&amp;fp=chrome&amp;pbk=NOxCvi9RXAiS1pC8Q3LxGMvvG_X4AvL-9CUr2IioPj4&amp;security=reality&amp;sid=17&amp;sni=findlaw.com&amp;spx=%2FwINQNnu3WlWwM48&amp;type=tcp#5 | США 🇺🇸">
+    <button onclick="copyKey(this)">Copy</button>
+</div>
+
+<div class="key">
+    
+    <span class="flag">🇹🇷</span>
+    
+    <input class="key-input" readonly value="vless://id795323250@45.89.52.228:443?flow=xtls-rprx-vision&amp;fp=chrome&amp;pbk=oncHA5R446UW_VbO6t2jRllAI4iLFbpvOvi1ndZ-Mys&amp;security=reality&amp;sid=9d2fc7dd498e&amp;sni=trendyol.com&amp;spx=%2FoXyZfzYGCYUKObu&amp;type=tcp#7 | Турция 🇹🇷">
+    <button onclick="copyKey(this)">Copy</button>
+</div>
+
+<div class="key">
+    
+    <span class="flag">🇱🇻</span>
+    
+    <input class="key-input" readonly value="vless://id795323250@185.145.245.36:443?flow=xtls-rprx-vision&amp;fp=edge&amp;pbk=wOSxr467-m4ivlNk1m10wf6k4LDqO2bAkN0SEoC0tCA&amp;security=reality&amp;sid=2e39&amp;sni=www.apple.com&amp;spx=%2FWCMcOjAi9G1JpuP&amp;type=tcp#9 | Латвия 🇱🇻">
+    <button onclick="copyKey(this)">Copy</button>
+</div>
+
+<div class="key">
+    
+    <span class="flag">🇳🇴</span>
+    
+    <input class="key-input" readonly value="vless://id795323250@185.40.4.142:443?flow=xtls-rprx-vision&amp;fp=random&amp;pbk=HS3ZBNzmMlUxTJIzQdYfS-_WbGJ2mwMINU3A1iwLxw8&amp;security=reality&amp;sid=5d78a34190cd091b&amp;sni=www.vk.com&amp;spx=%2FWsKTQUfwmUQ2v8E&amp;type=tcp#3 | Норвегия 🇳🇴">
+    <button onclick="copyKey(this)">Copy</button>
+</div>
+
+
+
+
+
+<script>//app/apps/sub_key/templates/static/js/script.js
+function copyKey(button) {
+    const input = button.parentElement.querySelector('.key-input');
+    navigator.clipboard.writeText(input.value).then(() => {
+        button.classList.add('copied');
+        button.textContent = '✅ Скопировано!';
+        setTimeout(() => {
+            button.classList.remove('copied');
+            button.textContent = 'Copy';
+        }, 2000);
+    });
+}</script>
+</body>
+</html>

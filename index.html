@@ -1,290 +1,183 @@
+<html><head>
+    <title>Subscription Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
 
+        h1 {
+            margin-top: 0;
+        }
 
-<!--app/apps/sub_key/templates/keys.html-->
+        .link-input {
+            margin-bottom: 10px;
+        }
 
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Vless VPN Keys</title>
+        .copy-button {
+            margin-left: 10px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .limited {
+            background-color: #F44336;
+            color: white;
+        }
+
+        .expired {
+            background-color: #FF9800;
+            color: white;
+        }
+
+        .disabled {
+            background-color: #9E9E9E;
+            color: white;
+        }
+
+        .qr-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 10px 25px 25px 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 9999;
+        }
+
+        .qr-close-button {
+            text-align: right;
+            margin-bottom: 5px;
+            margin-right: -15px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
+
 <body>
-<style>/* app/apps/sub_key/templates/static/css/style.css */
+    <h1>User Information</h1>
+    <p>Username: dSrq4FkAAI</p>
+    <p>Status: <span class="status active">active</span></p>
+    <p>Data Limit: ∞</p>
+    <p>Data Used: 1.78 TB</p>
+    <p>Expiration Date:
+        
+        ∞
+        </p>
 
-/* Общий фон и выравнивание */
-body {
-    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-    background: #151625;
-    background: linear-gradient(90deg,rgba(17, 42, 25, 1) 0%, rgba(33, 39, 64, 1) 35%, rgba(0, 8, 51, 1) 100%);
-      startColorstr="#151625",
-      endColorstr="#485785",
-      GradientType=1
-    )
-    min-height: 100vh;
-    margin: 0;
-    padding: 10px 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* Логотип */
-.logo img {
-    width: 150px;
-    height: auto;
-    margin-bottom: 10px;
-}
-
-/* Заголовок */
-h2 {
-    color: #e7e3e3;
-    font-size: 22px;
-    margin-bottom: 2px;
-}
-
-h3 {
-    color: #e7e3e3;
-    font-size: 20px;
-    margin-bottom: 2px;
-}
-
-/* Блок ключа */
-.key {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 15px;
-}
-
-/* Блок информации */
-.info {
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 15px 20px;
-    border-radius: 12px;
-    margin-bottom: 10px;
-    color: #e7e3e3;
-    font-size: 18px;
-    text-align: center;
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
-}
-
-.info p {
-    margin: 8px 0;
-}
-
-/* Блок информации */
-.info2 {
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 15px 20px;
-    border-radius: 12px;
-    margin-bottom: 10px;
-    color: #e7e3e3;
-    font-size: 18px;
-    text-align: center;
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
-}
-
-
-.info strong {
-    color: #d8dce8;
-}
-
-
-/* Эмодзи флага */
-.flag {
-    margin-right: 25px;
-    font-size: 40px; /* флаг делаем крупнее */
-}
-
-/* Поле ввода ключа */
-input {
-    width: 500px;
-    padding: 14px 18px;
-    font-size: 16px;
-    border: none;
-    border-radius: 12px;
-    background-color: #ffffff;
-    color: #333;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    outline: none;
-    transition: 0.3s;
-}
-
-.main-key-input {
-    width: 300px;
-    padding: 10px 14px;
-    font-size: 14px;
-}
-
-/* Фокус на input */
-input:focus {
-    transform: scale(1.025);
-    box-shadow: 0 0 0 3px #2a4ca3;
-}
-
-/* Кнопка копирования */
-button {
-    margin-left: 12px;
-    padding: 14px 22px;
-    font-size: 15px;
-    background: #2a4ca3;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background 0.3s, transform 0.2s;
-}
-
-/* Наведение на кнопку */
-button:hover {
-    background: #5548c8;
-    transform: scale(1.10);
-}
-
-/* Анимация кнопки после копирования */
-button.copied {
-    background: #28a745 !important;
-}
-
-/* Блок поддержки */
-.support {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-}
-
-.support-btn {
-    background: #2a4ca3;
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 18px;
-    padding: 14px 28px;
-    border-radius: 12px;
-    box-shadow: none;
-    transition: all 0.39s ease;
-    display: inline-block;
-}
-
-.support-btn:hover {
-    background: #5548c8;
-    transform: translateY(-2px) scale(1.035);
-    box-shadow: none;
-}</style>
-
-<!--<div class="logo">-->
-<!--    <img src="/static/img/logo.png" alt="HD VPN" width="150">-->
-<!--</div>-->
-
-<!-- Блок информации о балансе -->
-<div class="info">
-    <p>💰 Баланс: <strong>1394.0</strong> ₽</p>
-    <p>📅 Остаток дней: <strong>278</strong></p>
-    <p>📊 Израсходовано трафика: <strong>10.42</strong> ГБ</p>
-    <div class="support">
-    <a href="https://t.me/VlesVPNbot" target="_blank" class="support-btn">
-        ✉️ Написать в Поддержку
-    </a>
-</div>
-</div>
-
-<h2>Основной ключ</h2>
-<div class="info2">
-    <input class="key-input" readonly value="https://key.vlesvpn.ru/F4YSGF">
-    <button onclick="copyKey(this)">Copy</button>
-</div>
-
-
-<!---->
-<!--<h2>Ваши ключи</h2>-->
-<!---->
-<p></p>
-<h3>Ключи для продвинутых пользователей</h3>
-<p></p>
-
-<!-- Ключи -->
-
-<div class="key">
     
-    <span class="flag">🇩🇪</span>
+    <h2>Links:</h2>
+    <ul>
+        
+        <li>
+            <input type="text" value="vless://id795323250@194.107.126.214:443?flow=xtls-rprx-vision&fp=random&pbk=ZDt6EWhg4cY0COuFOQn6PUFGdKIaTqtLyFkMDdZj8nE&security=reality&sid=d453476a&sni=vk.com&spx=%2FnBMTc3831A6Cy9h&type=tcp#1 | Германия 🇩🇪 Рекомендуем ✅" readonly="">
+            <button class="copy-button" onclick="copyLink('vless://id795323250@194.107.126.214:443?flow=xtls-rprx-vision&fp=random&pbk=ZDt6EWhg4cY0COuFOQn6PUFGdKIaTqtLyFkMDdZj8nE&security=reality&sid=d453476a&sni=vk.com&spx=%2FnBMTc3831A6Cy9h&type=tcp#1 | Германия 🇩🇪 Рекомендуем ✅', this)">Copy</button>
+            <button class="qr-button" data-link="vless://id795323250@194.107.126.214:443?flow=xtls-rprx-vision&fp=random&pbk=ZDt6EWhg4cY0COuFOQn6PUFGdKIaTqtLyFkMDdZj8nE&security=reality&sid=d453476a&sni=vk.com&spx=%2FnBMTc3831A6Cy9h&type=tcp#1 | Германия 🇩🇪 Рекомендуем ✅">QR Code</button>
+        </li>
+        
+        <li>
+            <input type="text" value="vless://id795323250@193.178.172.233:443?flow=xtls-rprx-vision&fp=random&pbk=CndBb2Fbp7kn34tjcf_pDov8HFnt3RTQKfCEnoxp70Y&security=reality&sid=1b&sni=vk.com&spx=%2FwRKVDAnoNtfmWD8&type=tcp#4 | Нидерланды 🇳🇱" readonly="">
+            <button class="copy-button" onclick="copyLink('vless://id795323250@193.178.172.233:443?flow=xtls-rprx-vision&fp=random&pbk=CndBb2Fbp7kn34tjcf_pDov8HFnt3RTQKfCEnoxp70Y&security=reality&sid=1b&sni=vk.com&spx=%2FwRKVDAnoNtfmWD8&type=tcp#4 | Нидерланды 🇳🇱', this)">Copy</button>
+            <button class="qr-button" data-link="vless://id795323250@193.178.172.233:443?flow=xtls-rprx-vision&fp=random&pbk=CndBb2Fbp7kn34tjcf_pDov8HFnt3RTQKfCEnoxp70Y&security=reality&sid=1b&sni=vk.com&spx=%2FwRKVDAnoNtfmWD8&type=tcp#4 | Нидерланды 🇳🇱">QR Code</button>
+        </li>        
+        <li>
+            <input type="text" value="vless://id795323250@31.128.47.104:443?flow=xtls-rprx-vision&fp=chrome&pbk=7ysbZ2ahzaNFe3hw1TzmA3421nNEGUOeKm0jQyK-HGI&security=reality&sid=abd1806481&sni=www.rutube.ru&spx=%2F3DZomX1jLzaxHVG&type=tcp#8 | РФ | YouTube без рекламы 🇷🇺" readonly="">
+            <button class="copy-button" onclick="copyLink('vless://id795323250@31.128.47.104:443?flow=xtls-rprx-vision&fp=chrome&pbk=7ysbZ2ahzaNFe3hw1TzmA3421nNEGUOeKm0jQyK-HGI&security=reality&sid=abd1806481&sni=www.rutube.ru&spx=%2F3DZomX1jLzaxHVG&type=tcp#8 | РФ | YouTube без рекламы 🇷🇺', this)">Copy</button>
+            <button class="qr-button" data-link="vless://id795323250@31.128.47.104:443?flow=xtls-rprx-vision&fp=chrome&pbk=7ysbZ2ahzaNFe3hw1TzmA3421nNEGUOeKm0jQyK-HGI&security=reality&sid=abd1806481&sni=www.rutube.ru&spx=%2F3DZomX1jLzaxHVG&type=tcp#8 | РФ | YouTube без рекламы 🇷🇺">QR Code</button>
+        </li>        
+        <li>
+            <input type="text" value="vless://id795323250@194.34.132.39:443?flow=xtls-rprx-vision&fp=random&pbk=yDwHL93MSZMTVyDy0OhZu-NIlgNA9amsi_t1P8Sla0Q&security=reality&sid=f8&sni=www.vk.com&spx=%2FdGimsYN742zz3IR&type=tcp#2 | Финляндия 🇫🇮" readonly="">
+            <button class="copy-button" onclick="copyLink('vless://id795323250@194.34.132.39:443?flow=xtls-rprx-vision&fp=random&pbk=yDwHL93MSZMTVyDy0OhZu-NIlgNA9amsi_t1P8Sla0Q&security=reality&sid=f8&sni=www.vk.com&spx=%2FdGimsYN742zz3IR&type=tcp#2 | Финляндия 🇫🇮', this)">Copy</button>
+            <button class="qr-button" data-link="vless://id795323250@194.34.132.39:443?flow=xtls-rprx-vision&fp=random&pbk=yDwHL93MSZMTVyDy0OhZu-NIlgNA9amsi_t1P8Sla0Q&security=reality&sid=f8&sni=www.vk.com&spx=%2FdGimsYN742zz3IR&type=tcp#2 | Финляндия 🇫🇮">QR Code</button>
+        </li>        
+        <li>
+            <input type="text" value="vless://id795323250@95.181.173.153:443?flow=xtls-rprx-vision&fp=chrome&pbk=NOxCvi9RXAiS1pC8Q3LxGMvvG_X4AvL-9CUr2IioPj4&security=reality&sid=17&sni=findlaw.com&spx=%2FwINQNnu3WlWwM48&type=tcp#5 | США 🇺🇸" readonly="">
+            <button class="copy-button" onclick="copyLink('vless://id795323250@95.181.173.153:443?flow=xtls-rprx-vision&fp=chrome&pbk=NOxCvi9RXAiS1pC8Q3LxGMvvG_X4AvL-9CUr2IioPj4&security=reality&sid=17&sni=findlaw.com&spx=%2FwINQNnu3WlWwM48&type=tcp#5 | США 🇺🇸', this)">Copy</button>
+            <button class="qr-button" data-link="vless://id795323250@95.181.173.153:443?flow=xtls-rprx-vision&fp=chrome&pbk=NOxCvi9RXAiS1pC8Q3LxGMvvG_X4AvL-9CUr2IioPj4&security=reality&sid=17&sni=findlaw.com&spx=%2FwINQNnu3WlWwM48&type=tcp#5 | США 🇺🇸">QR Code</button>
+        </li>        
+        <li>
+            <input type="text" value="vless://id795323250@45.89.52.228:443?flow=xtls-rprx-vision&fp=chrome&pbk=oncHA5R446UW_VbO6t2jRllAI4iLFbpvOvi1ndZ-Mys&security=reality&sid=9d2fc7dd498e&sni=trendyol.com&spx=%2FoXyZfzYGCYUKObu&type=tcp#7 | Турция 🇹🇷" readonly="">
+            <button class="copy-button" onclick="copyLink('vless://id795323250@45.89.52.228:443?flow=xtls-rprx-vision&fp=chrome&pbk=oncHA5R446UW_VbO6t2jRllAI4iLFbpvOvi1ndZ-Mys&security=reality&sid=9d2fc7dd498e&sni=trendyol.com&spx=%2FoXyZfzYGCYUKObu&type=tcp#7 | Турция 🇹🇷', this)">Copy</button>
+            <button class="qr-button" data-link="vless://id795323250@45.89.52.228:443?flow=xtls-rprx-vision&fp=chrome&pbk=oncHA5R446UW_VbO6t2jRllAI4iLFbpvOvi1ndZ-Mys&security=reality&sid=9d2fc7dd498e&sni=trendyol.com&spx=%2FoXyZfzYGCYUKObu&type=tcp#7 | Турция 🇹🇷">QR Code</button>
+        </li>        
+        <li>
+            <input type="text" value="vless://id795323250@185.145.245.36:443?flow=xtls-rprx-vision&fp=edge&pbk=wOSxr467-m4ivlNk1m10wf6k4LDqO2bAkN0SEoC0tCA&security=reality&sid=2e39&sni=www.apple.com&spx=%2FWCMcOjAi9G1JpuP&type=tcp#9 | Латвия 🇱🇻" readonly="">
+            <button class="copy-button" onclick="copyLink('vless://id795323250@185.145.245.36:443?flow=xtls-rprx-vision&fp=edge&pbk=wOSxr467-m4ivlNk1m10wf6k4LDqO2bAkN0SEoC0tCA&security=reality&sid=2e39&sni=www.apple.com&spx=%2FWCMcOjAi9G1JpuP&type=tcp#9 | Латвия 🇱🇻', this)">Copy</button>
+            <button class="qr-button" data-link="vless://id795323250@185.145.245.36:443?flow=xtls-rprx-vision&fp=edge&pbk=wOSxr467-m4ivlNk1m10wf6k4LDqO2bAkN0SEoC0tCA&security=reality&sid=2e39&sni=www.apple.com&spx=%2FWCMcOjAi9G1JpuP&type=tcp#9 | Латвия 🇱🇻">QR Code</button>
+        </li>        
+        <li>
+            <input type="text" value="vless://id795323250@185.40.4.142:443?flow=xtls-rprx-vision&fp=random&pbk=HS3ZBNzmMlUxTJIzQdYfS-_WbGJ2mwMINU3A1iwLxw8&security=reality&sid=5d78a34190cd091b&sni=www.vk.com&spx=%2FWsKTQUfwmUQ2v8E&type=tcp#3 | Норвегия 🇳🇴" readonly="">
+            <button class="copy-button" onclick="copyLink('vless://id795323250@185.40.4.142:443?flow=xtls-rprx-vision&fp=random&pbk=HS3ZBNzmMlUxTJIzQdYfS-_WbGJ2mwMINU3A1iwLxw8&security=reality&sid=5d78a34190cd091b&sni=www.vk.com&spx=%2FWsKTQUfwmUQ2v8E&type=tcp#3 | Норвегия 🇳🇴', this)">Copy</button>
+            <button class="qr-button" data-link="vless://id795323250@185.40.4.142:443?flow=xtls-rprx-vision&fp=random&pbk=HS3ZBNzmMlUxTJIzQdYfS-_WbGJ2mwMINU3A1iwLxw8&security=reality&sid=5d78a34190cd091b&sni=www.vk.com&spx=%2FWsKTQUfwmUQ2v8E&type=tcp#3 | Норвегия 🇳🇴">QR Code</button>
+        </li>
+        
+        
+        <li>
+            <input type="text" value="False" readonly="">
+            <button class="copy-button" onclick="copyLink('False', this)">Copy</button>
+            <button class="qr-button" data-link="False">QR Code</button>
+        </li>
+        
+    </ul>
+    <div class="qr-popup" id="qrPopup">
+        <div class="qr-close-button">
+            <button onclick="closeQrPopup()">X</button>
+        </div>
+        <div id="qrCodeContainer"></div>
+    </div>
     
-    <input class="key-input" readonly value="vless://id795323250@194.107.126.214:443?flow=xtls-rprx-vision&amp;fp=random&amp;pbk=ZDt6EWhg4cY0COuFOQn6PUFGdKIaTqtLyFkMDdZj8nE&amp;security=reality&amp;sid=d453476a&amp;sni=vk.com&amp;spx=%2FnBMTc3831A6Cy9h&amp;type=tcp#1 | Германия 🇩🇪 Рекомендуем ✅">
-    <button onclick="copyKey(this)">Copy</button>
-</div>
 
-<div class="key">
-    
-    <span class="flag">🇳🇱</span>
-    
-    <input class="key-input" readonly value="vless://id795323250@193.178.172.233:443?flow=xtls-rprx-vision&amp;fp=random&amp;pbk=CndBb2Fbp7kn34tjcf_pDov8HFnt3RTQKfCEnoxp70Y&amp;security=reality&amp;sid=1b&amp;sni=vk.com&amp;spx=%2FwRKVDAnoNtfmWD8&amp;type=tcp#4 | Нидерланды 🇳🇱">
-    <button onclick="copyKey(this)">Copy</button>
-</div>
+    <script>
+        function copyLink(link, button) {
+            const tempInput = document.createElement('input');
+            tempInput.setAttribute('value', link);
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
 
-<div class="key">
-    
-    <span class="flag">🇷🇺</span>
-    
-    <input class="key-input" readonly value="vless://id795323250@31.128.47.104:443?flow=xtls-rprx-vision&amp;fp=chrome&amp;pbk=7ysbZ2ahzaNFe3hw1TzmA3421nNEGUOeKm0jQyK-HGI&amp;security=reality&amp;sid=abd1806481&amp;sni=www.rutube.ru&amp;spx=%2F3DZomX1jLzaxHVG&amp;type=tcp#8 | РФ | YouTube без рекламы 🇷🇺">
-    <button onclick="copyKey(this)">Copy</button>
-</div>
+            button.textContent = 'Copied!';
+            setTimeout(function () {
+                button.textContent = 'Copy';
+            }, 1500);
+        }
 
-<div class="key">
-    
-    <span class="flag">🇫🇮</span>
-    
-    <input class="key-input" readonly value="vless://id795323250@194.34.132.39:443?flow=xtls-rprx-vision&amp;fp=random&amp;pbk=yDwHL93MSZMTVyDy0OhZu-NIlgNA9amsi_t1P8Sla0Q&amp;security=reality&amp;sid=f8&amp;sni=www.vk.com&amp;spx=%2FdGimsYN742zz3IR&amp;type=tcp#2 | Финляндия 🇫🇮">
-    <button onclick="copyKey(this)">Copy</button>
-</div>
+        const qrButtons = document.querySelectorAll('.qr-button');
+        const qrPopup = document.getElementById('qrPopup');
 
-<div class="key">
-    
-    <span class="flag">🇺🇸</span>
-    
-    <input class="key-input" readonly value="vless://id795323250@95.181.173.153:443?flow=xtls-rprx-vision&amp;fp=chrome&amp;pbk=NOxCvi9RXAiS1pC8Q3LxGMvvG_X4AvL-9CUr2IioPj4&amp;security=reality&amp;sid=17&amp;sni=findlaw.com&amp;spx=%2FwINQNnu3WlWwM48&amp;type=tcp#5 | США 🇺🇸">
-    <button onclick="copyKey(this)">Copy</button>
-</div>
-
-<div class="key">
-    
-    <span class="flag">🇹🇷</span>
-    
-    <input class="key-input" readonly value="vless://id795323250@45.89.52.228:443?flow=xtls-rprx-vision&amp;fp=chrome&amp;pbk=oncHA5R446UW_VbO6t2jRllAI4iLFbpvOvi1ndZ-Mys&amp;security=reality&amp;sid=9d2fc7dd498e&amp;sni=trendyol.com&amp;spx=%2FoXyZfzYGCYUKObu&amp;type=tcp#7 | Турция 🇹🇷">
-    <button onclick="copyKey(this)">Copy</button>
-</div>
-
-<div class="key">
-    
-    <span class="flag">🇱🇻</span>
-    
-    <input class="key-input" readonly value="vless://id795323250@185.145.245.36:443?flow=xtls-rprx-vision&amp;fp=edge&amp;pbk=wOSxr467-m4ivlNk1m10wf6k4LDqO2bAkN0SEoC0tCA&amp;security=reality&amp;sid=2e39&amp;sni=www.apple.com&amp;spx=%2FWCMcOjAi9G1JpuP&amp;type=tcp#9 | Латвия 🇱🇻">
-    <button onclick="copyKey(this)">Copy</button>
-</div>
-
-<div class="key">
-    
-    <span class="flag">🇳🇴</span>
-    
-    <input class="key-input" readonly value="vless://id795323250@185.40.4.142:443?flow=xtls-rprx-vision&amp;fp=random&amp;pbk=HS3ZBNzmMlUxTJIzQdYfS-_WbGJ2mwMINU3A1iwLxw8&amp;security=reality&amp;sid=5d78a34190cd091b&amp;sni=www.vk.com&amp;spx=%2FWsKTQUfwmUQ2v8E&amp;type=tcp#3 | Норвегия 🇳🇴">
-    <button onclick="copyKey(this)">Copy</button>
-</div>
+        qrButtons.forEach((qrButton) => {
+            qrButton.addEventListener('click', () => {
+                const link = qrButton.dataset.link;
+                while (qrCodeContainer.firstChild) {
+                    qrCodeContainer.removeChild(qrCodeContainer.firstChild);
+                }
+                const qrCode = new QRCode(qrCodeContainer, {
+                    text: link,
+                    width: 256,
+                    height: 256
+                });
+                qrPopup.style.display = 'block';
+            });
+        });
+        function closeQrPopup() {
+            document.getElementById('qrPopup').style.display = 'none';
+        }
+    </script>
 
 
-
-
-
-<script>//app/apps/sub_key/templates/static/js/script.js
-function copyKey(button) {
-    const input = button.parentElement.querySelector('.key-input');
-    navigator.clipboard.writeText(input.value).then(() => {
-        button.classList.add('copied');
-        button.textContent = '✅ Скопировано!';
-        setTimeout(() => {
-            button.classList.remove('copied');
-            button.textContent = 'Copy';
-        }, 2000);
-    });
-}</script>
-</body>
-</html>
+</body></html>

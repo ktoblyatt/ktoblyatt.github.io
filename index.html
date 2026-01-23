@@ -6,7 +6,7 @@
     <title>TANDEM VPN | Subscriptions</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* СТИЛИ ОСТАВЛЯЕМ ТЕ ЖЕ (PRO ВЕРСИЯ) */
+        /* СТИЛИ БЕЗ ИЗМЕНЕНИЙ */
         :root {
             --bg-color: #050505;
             --card-bg: rgba(30, 30, 32, 0.7);
@@ -160,10 +160,8 @@
         </div>
 
         <div id="global-section"></div>
-        
         <div class="section-title"><i class="fas fa-globe-americas"></i> Top Regions</div>
         <div id="regions-grid" class="grid"></div>
-
         <div class="section-title"><i class="fas fa-flag"></i> Countries</div>
         <div id="countries-grid" class="grid"></div>
     </div>
@@ -287,21 +285,19 @@
             });
         });
 
-        // === ИСПРАВЛЕННОЕ КОПИРОВАНИЕ ДЛЯ ПРИЛОЖЕНИЙ ===
+        // === ФИНАЛЬНЫЙ ФИКС КОПИРОВАНИЯ ===
         function copyLink(sub) {
             const baseUrl = window.location.origin;
             
-            // 1. Формируем чистое имя: "TANDEM RU" (вместо TANDEM_VPN_RU для эстетики)
-            const niceName = `TANDEM ${sub.id.toUpperCase()}`;
+            // 1. Формируем чистое имя: "TANDEM RU"
+            const niceName = `TANDEM_VPN ${sub.id.toUpperCase()}`;
             
-            // 2. Кодируем имя для URL (пробелы станут %20)
+            // 2. Кодируем имя для URL
             const encodedName = encodeURIComponent(niceName);
             
-            // 3. Формируем ссылку "Тройной удар":
-            // - Обычная ссылка
-            // - Параметр ?name= (для умных клиентов)
-            // - Хэштег # (для старых клиентов)
-            const link = `${baseUrl}/sub/${sub.id}?name=${encodedName}#${encodedName}`;
+            // 3. Формируем ссылку ТОЛЬКО с ?name=
+            // Убираем хэштег, так как он вызывает дублирование в HAPP/Streisand
+            const link = `${baseUrl}/sub/${sub.id}?name=${encodedName}`;
 
             navigator.clipboard.writeText(link).then(() => {
                 showToast(niceName);

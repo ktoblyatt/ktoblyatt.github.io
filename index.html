@@ -166,19 +166,71 @@
     </div>
 
     <script>
-        // === КОНФИГУРАЦИЯ (Сюда Python будет писать данные) ===
+        // === КОНФИГУРАЦИЯ ===
         const subscriptions = [
-            // ПРИМЕР ДАННЫХ (Python заменит это на реальные данные):
             /* PYTHON_INJECT_START */
-            { id: 'all', name: 'Global Mix', desc: 'All countries (Best Ping)', icon: '🌍' },
-            { id: 'ru', name: 'Russia', desc: 'Direct & Low Latency', icon: '🇷🇺' },
-            { id: 'de', name: 'Germany', desc: 'Europe Datacenter', icon: '🇩🇪' },
-            { id: 'us', name: 'USA', desc: 'Americas', icon: '🇺🇸' },
+            { id: 'all', name: 'All', desc: 'Region Collection (1 pcs)', icon: '🗺️' },
+            { id: 'all', name: 'Global Mix', desc: 'All proxies (11229 pcs)', icon: '🌍' },
+            { id: 'ae', name: 'AE', desc: 'Fast & Stable (24 pcs)', icon: '🇦🇪' },
+            { id: 'al', name: 'AL', desc: 'Fast & Stable (15 pcs)', icon: '🇦🇱' },
+            { id: 'at', name: 'AT', desc: 'Fast & Stable (50 pcs)', icon: '🇦🇹' },
+            { id: 'au', name: 'AU', desc: 'Fast & Stable (7 pcs)', icon: '🇦🇺' },
+            { id: 'americas', name: 'Americas', desc: 'Region Collection (50 pcs)', icon: '🗺️' },
+            { id: 'asia', name: 'Asia', desc: 'Region Collection (50 pcs)', icon: '🗺️' },
+            { id: 'be', name: 'BE', desc: 'Fast & Stable (13 pcs)', icon: '🇧🇪' },
+            { id: 'br', name: 'BR', desc: 'Fast & Stable (15 pcs)', icon: '🇧🇷' },
+            { id: 'by', name: 'Belarus', desc: 'Fast & Stable (2 pcs)', icon: '🇧🇾' },
+            { id: 'ca', name: 'CA', desc: 'Fast & Stable (18 pcs)', icon: '🇨🇦' },
+            { id: 'ch', name: 'CH', desc: 'Fast & Stable (39 pcs)', icon: '🇨🇭' },
+            { id: 'cy', name: 'CY', desc: 'Fast & Stable (50 pcs)', icon: '🇨🇾' },
+            { id: 'cis', name: 'Cis', desc: 'Region Collection (50 pcs)', icon: '🗺️' },
+            { id: 'es', name: 'ES', desc: 'Fast & Stable (28 pcs)', icon: '🇪🇸' },
+            { id: 'ee', name: 'Estonia', desc: 'Fast & Stable (35 pcs)', icon: '🇪🇪' },
+            { id: 'europe', name: 'Europe', desc: 'Region Collection (50 pcs)', icon: '🗺️' },
+            { id: 'fi', name: 'Finland', desc: 'Fast & Stable (50 pcs)', icon: '🇫🇮' },
+            { id: 'fr', name: 'France', desc: 'Fast & Stable (50 pcs)', icon: '🇫🇷' },
+            { id: 'de', name: 'Germany', desc: 'Fast & Stable (50 pcs)', icon: '🇩🇪' },
+            { id: 'hk', name: 'HK', desc: 'Fast & Stable (50 pcs)', icon: '🇭🇰' },
+            { id: 'hu', name: 'HU', desc: 'Fast & Stable (50 pcs)', icon: '🇭🇺' },
+            { id: 'il', name: 'IL', desc: 'Fast & Stable (2 pcs)', icon: '🇮🇱' },
+            { id: 'in', name: 'IN', desc: 'Fast & Stable (50 pcs)', icon: '🇮🇳' },
+            { id: 'iq', name: 'IQ', desc: 'Fast & Stable (4 pcs)', icon: '🇮🇶' },
+            { id: 'is', name: 'IS', desc: 'Fast & Stable (3 pcs)', icon: '🇮🇸' },
+            { id: 'it', name: 'IT', desc: 'Fast & Stable (8 pcs)', icon: '🇮🇹' },
+            { id: 'jp', name: 'JP', desc: 'Fast & Stable (29 pcs)', icon: '🇯🇵' },
+            { id: 'kr', name: 'KR', desc: 'Fast & Stable (17 pcs)', icon: '🇰🇷' },
+            { id: 'kz', name: 'Kazakhstan', desc: 'Fast & Stable (50 pcs)', icon: '🇰🇿' },
+            { id: 'lt', name: 'LT', desc: 'Fast & Stable (43 pcs)', icon: '🇱🇹' },
+            { id: 'lv', name: 'LV', desc: 'Fast & Stable (50 pcs)', icon: '🇱🇻' },
+            { id: 'list', name: 'List', desc: 'Region Collection (11229 pcs)', icon: '🗺️' },
+            { id: 'my', name: 'MY', desc: 'Fast & Stable (1 pcs)', icon: '🇲🇾' },
+            { id: 'md', name: 'Moldova', desc: 'Fast & Stable (50 pcs)', icon: '🇲🇩' },
+            { id: 'no', name: 'NO', desc: 'Fast & Stable (2 pcs)', icon: '🇳🇴' },
+            { id: 'nz', name: 'NZ', desc: 'Fast & Stable (2 pcs)', icon: '🇳🇿' },
+            { id: 'nl', name: 'Netherlands', desc: 'Fast & Stable (50 pcs)', icon: '🇳🇱' },
+            { id: 'oceania', name: 'Oceania', desc: 'Region Collection (9 pcs)', icon: '🗺️' },
+            { id: 'ph', name: 'PH', desc: 'Fast & Stable (2 pcs)', icon: '🇵🇭' },
+            { id: 'pl', name: 'Poland', desc: 'Fast & Stable (50 pcs)', icon: '🇵🇱' },
+            { id: 'ru', name: 'Russia', desc: 'Fast & Stable (50 pcs)', icon: '🇷🇺' },
+            { id: 'sa', name: 'SA', desc: 'Fast & Stable (7 pcs)', icon: '🇸🇦' },
+            { id: 'se', name: 'SE', desc: 'Fast & Stable (50 pcs)', icon: '🇸🇪' },
+            { id: 'sg', name: 'SG', desc: 'Fast & Stable (13 pcs)', icon: '🇸🇬' },
+            { id: 'si', name: 'SI', desc: 'Fast & Stable (26 pcs)', icon: '🇸🇮' },
+            { id: 'sk', name: 'SK', desc: 'Fast & Stable (19 pcs)', icon: '🇸🇰' },
+            { id: 'tw', name: 'TW', desc: 'Fast & Stable (1 pcs)', icon: '🇹🇼' },
+            { id: 'tr', name: 'Turkey', desc: 'Fast & Stable (50 pcs)', icon: '🇹🇷' },
+            { id: 'gb', name: 'UK', desc: 'Fast & Stable (50 pcs)', icon: '🇬🇧' },
+            { id: 'us', name: 'USA', desc: 'Fast & Stable (50 pcs)', icon: '🇺🇸' },
+            { id: 'za', name: 'ZA', desc: 'Fast & Stable (7 pcs)', icon: '🇿🇦' }
             /* PYTHON_INJECT_END */
         ];
 
         const grid = document.getElementById('grid');
         const toast = document.getElementById('toast');
+
+        if (subscriptions.length === 0) {
+            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #8e8e93;">No subscriptions available yet.</div>';
+        }
 
         // Рендеринг карточек
         subscriptions.forEach(sub => {
@@ -201,16 +253,19 @@
 
         // Функция копирования
         function copyLink(id) {
-            // Формируем ссылку: https://your-site.github.io/sub/ru
-            // window.location.origin вернет текущий домен (https://ktoblyatt.github.io)
             const baseUrl = window.location.origin; 
-            const link = `${baseUrl}/sub/${id}`; // БЕЗ .txt, как ты просил
+            // Получаем путь (sub/ru, sub/all)
+            // Важно: если репозиторий не в корне домена, а вида user.github.io/repo/
+            // то нужно учитывать pathname. Но для user.github.io всё ок.
+            
+            // Формируем ссылку: https://site.io/sub/ru
+            const link = `${baseUrl}/sub/${id}`; 
 
             navigator.clipboard.writeText(link).then(() => {
                 showToast();
             }).catch(err => {
                 console.error('Failed to copy: ', err);
-                alert('Copy failed. Please copy manually: ' + link);
+                alert('Copy failed: ' + link);
             });
         }
 

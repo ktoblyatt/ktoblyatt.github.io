@@ -6,6 +6,7 @@
     <title>TANDEM VPN | Subscriptions</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* СТИЛИ ОСТАВЛЯЕМ ТЕ ЖЕ (PRO ВЕРСИЯ) */
         :root {
             --bg-color: #050505;
             --card-bg: rgba(30, 30, 32, 0.7);
@@ -168,7 +169,7 @@
     </div>
 
     <div id="toast" class="toast">
-        <i class="fas fa-check-circle" style="color: var(--accent-green)"></i> Copied to clipboard!
+        <i class="fas fa-check-circle" style="color: var(--accent-green)"></i> Link Copied!
     </div>
 
     <script>
@@ -241,9 +242,8 @@
         function createCard(sub, isGlobal = false) {
             const card = document.createElement('div');
             card.className = `card ${isGlobal ? 'global' : ''}`;
-            card.onclick = () => copyLink(sub.id);
+            card.onclick = () => copyLink(sub); 
             
-            // Если это страна, добавляем атрибут для поиска
             if (!isGlobal && sub.type === 'country') {
                 card.setAttribute('data-name', sub.name.toLowerCase());
             }
@@ -287,14 +287,24 @@
             });
         });
 
-        // КОПИРОВАНИЕ
-        function copyLink(id) {
+        // === ИСПРАВЛЕННОЕ КОПИРОВАНИЕ ДЛЯ ПРИЛОЖЕНИЙ ===
+        function copyLink(sub) {
             const baseUrl = window.location.origin;
-            // Убираем возможный двойной слэш если сайт в подпапке, но обычно для github.io это работает
-            const link = `${baseUrl}/sub/${id}`;
+            
+            // 1. Формируем чистое имя: "TANDEM RU" (вместо TANDEM_VPN_RU для эстетики)
+            const niceName = `TANDEM ${sub.id.toUpperCase()}`;
+            
+            // 2. Кодируем имя для URL (пробелы станут %20)
+            const encodedName = encodeURIComponent(niceName);
+            
+            // 3. Формируем ссылку "Тройной удар":
+            // - Обычная ссылка
+            // - Параметр ?name= (для умных клиентов)
+            // - Хэштег # (для старых клиентов)
+            const link = `${baseUrl}/sub/${sub.id}?name=${encodedName}#${encodedName}`;
 
             navigator.clipboard.writeText(link).then(() => {
-                showToast();
+                showToast(niceName);
             }).catch(err => {
                 alert('Copy failed: ' + link);
             });
@@ -302,7 +312,8 @@
 
         let toastTimeout;
         const toast = document.getElementById('toast');
-        function showToast() {
+        function showToast(text) {
+            toast.innerHTML = `<i class="fas fa-check-circle" style="color: var(--accent-green)"></i> ${text} Copied!`;
             toast.classList.add('show');
             clearTimeout(toastTimeout);
             toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 2000);

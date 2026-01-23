@@ -1,1 +1,227 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TANDEM VPN | Subscriptions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #000000;
+            --card-bg: rgba(28, 28, 30, 0.65);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #8e8e93;
+            --accent-blue: #0A84FF;
+            --accent-green: #30D158;
+            --hover-bg: rgba(255, 255, 255, 0.1);
+            --blur: 20px;
+        }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+        body {
+            background: radial-gradient(circle at top center, #1c1c1e 0%, #000000 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeIn 0.8s ease;
+        }
+        .header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #fff, #8e8e93);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header p {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            width: 100%;
+        }
+
+        /* Card */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(var(--blur));
+            -webkit-backdrop-filter: blur(var(--blur));
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            background: var(--hover-bg);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+        }
+
+        .card:active {
+            transform: scale(0.98);
+        }
+
+        .card-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .flag-icon {
+            font-size: 28px;
+            width: 40px;
+            text-align: center;
+        }
+
+        .card-title {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        .card-subtitle {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .action-icon {
+            color: var(--accent-blue);
+            font-size: 18px;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        .card:hover .action-icon { opacity: 1; }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(48, 209, 88, 0.2);
+            border: 1px solid var(--accent-green);
+            color: var(--accent-green);
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>TANDEM VPN</h1>
+            <p>Select a region to copy subscription link</p>
+        </div>
+
+        <div id="grid" class="grid">
+            </div>
+    </div>
+
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle"></i> Link Copied!
+    </div>
+
+    <script>
+        // === КОНФИГУРАЦИЯ (Сюда Python будет писать данные) ===
+        const subscriptions = [
+            // ПРИМЕР ДАННЫХ (Python заменит это на реальные данные):
+            /* PYTHON_INJECT_START */
+            { id: 'all', name: 'Global Mix', desc: 'All countries (Best Ping)', icon: '🌍' },
+            { id: 'ru', name: 'Russia', desc: 'Direct & Low Latency', icon: '🇷🇺' },
+            { id: 'de', name: 'Germany', desc: 'Europe Datacenter', icon: '🇩🇪' },
+            { id: 'us', name: 'USA', desc: 'Americas', icon: '🇺🇸' },
+            /* PYTHON_INJECT_END */
+        ];
+
+        const grid = document.getElementById('grid');
+        const toast = document.getElementById('toast');
+
+        // Рендеринг карточек
+        subscriptions.forEach(sub => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.onclick = () => copyLink(sub.id);
+
+            card.innerHTML = `
+                <div class="card-info">
+                    <div class="flag-icon">${sub.icon}</div>
+                    <div>
+                        <div class="card-title">${sub.name}</div>
+                        <div class="card-subtitle">${sub.desc}</div>
+                    </div>
+                </div>
+                <i class="fas fa-copy action-icon"></i>
+            `;
+            grid.appendChild(card);
+        });
+
+        // Функция копирования
+        function copyLink(id) {
+            // Формируем ссылку: https://your-site.github.io/sub/ru
+            // window.location.origin вернет текущий домен (https://ktoblyatt.github.io)
+            const baseUrl = window.location.origin; 
+            const link = `${baseUrl}/sub/${id}`; // БЕЗ .txt, как ты просил
+
+            navigator.clipboard.writeText(link).then(() => {
+                showToast();
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                alert('Copy failed. Please copy manually: ' + link);
+            });
+        }
+
+        let toastTimeout;
+        function showToast() {
+            toast.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

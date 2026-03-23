@@ -38,7 +38,7 @@ print_banner() {
     clear
     echo -e "${BOLD}"
     echo "╔══════════════════════════════════════════════════════╗"
-    echo "║        MTProto Proxy — Управление (mtg v2)  v6         ║"
+    echo "║        MTProto Proxy — Управление (mtg v2)           ║"
     echo "║        Fake TLS | Защита от РКН / DPI / ТСПУ         ║"
     echo "╚══════════════════════════════════════════════════════╝"
     echo -e "${NC}"
@@ -278,8 +278,7 @@ start_proxy() {
         --restart unless-stopped
         -p "${PORT}:${PORT}"
         -e MTG_BIND="0.0.0.0:${PORT}"
-        -e MTG_IPV4="${PUBLIC_IP}"
-        -e MTG_IPV4_PORT="${PORT}"
+        -e MTG_IPV4="${PUBLIC_IP}:${PORT}"
         nineseconds/mtg:1
         run
         "$SECRET"

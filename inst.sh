@@ -218,15 +218,16 @@ https://download.docker.com/linux/${OS_ID} $(lsb_release -cs) stable" \
 # ─── Генерация секрета (Fake TLS) ─────────────────────────────────────────────
 generate_secret() {
     info "Генерирую Fake TLS секрет для домена: $CLOAK_DOMAIN"
-    SECRET=$(docker run --rm nineseconds/mtg:2 generate-secret --hex "$CLOAK_DOMAIN" 2>/dev/null)
+    # mtg v1: generate-secret tls --hex <domain>
+    SECRET=$(docker run --rm nineseconds/mtg:1 generate-secret tls --hex "$CLOAK_DOMAIN" 2>/dev/null)
     if [[ -z "$SECRET" ]]; then
         error "Не удалось сгенерировать секрет. Проверьте подключение к Docker Hub."
     fi
-    # Секрет mtg имеет формат: ee<32 hex символа><домен в hex>
+    # Секрет имеет формат: ee<32 hex символа><домен в hex>
     # Для @MTProxybot нужны только 32 символа после префикса 'ee'
     BOT_SECRET="${SECRET:2:32}"
-    success "Секрет сгенерирован: $SECRET"
-    success "Секрет для @MTProxybot: $BOT_SECRET"
+    success "Секрет (полный):      $SECRET"
+    success "Секрет для бота:      $BOT_SECRET"
 }
 
 # ─── Определение внешнего IP ──────────────────────────────────────────────────
@@ -266,21 +267,24 @@ start_proxy() {
 
     info "Запускаю MTProto прокси..."
 
-    # Собираем аргументы динамически — тег добавляем только если задан
+    # mtg v1 используется для поддержки adtag (Proxy Tag)
+    # mtg v2 удалил эту функцию
+    # Образ: nineseconds/mtg:1 (последняя стабильная v1)
     DOCKER_ARGS=(
         run -d
         --name "$CONTAINER_NAME"
         --restart unless-stopped
         -p "${PORT}:${PORT}"
-        nineseconds/mtg:2
-        simple-run
-        -n 1.1.1.1
-        -i prefer-ipv4
+        nineseconds/mtg:1
+        --bind "0.0.0.0:${PORT}"
+        --prefer-ipv4
+        --doh-ip 1.1.1.1
     )
 
-    [[ -n "${PROXY_TAG:-}" ]] && DOCKER_ARGS+=(-t "$PROXY_TAG")
+    # adtag (Proxy Tag) поддерживается только в v1
+    [[ -n "${PROXY_TAG:-}" ]] && DOCKER_ARGS+=(--adtag "$PROXY_TAG")
 
-    DOCKER_ARGS+=("0.0.0.0:${PORT}" "$SECRET")
+    DOCKER_ARGS+=("$SECRET")
 
     docker "${DOCKER_ARGS[@]}"
 
@@ -391,7 +395,7 @@ action_remove() {
     echo -e "  Будет удалено:"
     $CONTAINER_EXISTS && echo -e "  ${RED}•${NC} Docker-контейнер: $CONTAINER_NAME"
     $CONFIG_EXISTS    && echo -e "  ${RED}•${NC} Файл конфигурации: $STATE_FILE"
-    echo -e "  ${RED}•${NC} Docker-образ: nineseconds/mtg:2"
+    echo -e "  ${RED}•${NC} Docker-образ: nineseconds/mtg:1"
     echo ""
     echo -e "  ${YELLOW}Правило файрвола для порта НЕ удаляется автоматически.${NC}"
     echo ""
@@ -418,9 +422,9 @@ action_remove() {
     fi
 
     # Удаляем образ
-    if docker images nineseconds/mtg:2 -q 2>/dev/null | grep -q .; then
-        info "Удаляю Docker-образ nineseconds/mtg:2..."
-        docker rmi nineseconds/mtg:2 &>/dev/null && success "Образ удалён"
+    if docker images nineseconds/mtg:1 -q 2>/dev/null | grep -q .; then
+        info "Удаляю Docker-образ nineseconds/mtg:1..."
+        docker rmi nineseconds/mtg:1 &>/dev/null && success "Образ удалён"
     fi
 
     # Удаляем конфигурацию

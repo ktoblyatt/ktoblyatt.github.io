@@ -2,8 +2,8 @@
 set -e
 
 echo ""
-echo "🛡 Установка официального MTProto Proxy с поддержкой рекламы"
-echo "=========================================================="
+echo "🛡 Установка официального MTProto Proxy (Без FakeTLS) с поддержкой рекламы"
+echo "=========================================================================="
 
 # 1. Проверка Docker
 if ! command -v docker &>/dev/null; then
@@ -13,28 +13,23 @@ if ! command -v docker &>/dev/null; then
     echo "   ✅ Docker установлен"
 fi
 
-# 2. Очистка старых версий (чтобы освободить 443 порт)
+# 2. Очистка старых версий (освобождаем 443 порт)
 echo "🛑 Удаление старых контейнеров (mtg, mtproxy)..."
 docker rm -f mtg mtproxy 2>/dev/null || true
 
-# 3. Генерация ключей
-BASE_SECRET=$(head -c 16 /dev/urandom | xxd -ps -c 256)
-DOMAIN_HEX=$(echo -n "google.com" | xxd -ps -c 256)
-# Формируем dd-секрет для FakeTLS
-SECRET="dd${BASE_SECRET}${DOMAIN_HEX}"
-
+# 3. Генерация чистого ключа (32 символа, без 'dd' и домена)
+SECRET=$(head -c 16 /dev/urandom | xxd -ps -c 256)
 IP=$(curl -4 -s ifconfig.me || curl -4 -s icanhazip.com || hostname -I | awk '{print $1}')
 
 echo ""
 echo "========================================="
-echo "🔑 Ваш БАЗОВЫЙ секрет для @MTProxybot:"
-echo "   $BASE_SECRET"
+echo "🔑 Ваш СЕКРЕТ для @MTProxybot:"
+echo "   $SECRET"
 echo "========================================="
 echo ""
 echo "⏳ Скрипт приостановлен."
-echo "Прямо сейчас отправьте этот базовый секрет боту @MTProxybot."
-echo "Бот выдаст вам Proxy Tag (длинную строку)."
-echo "Скопируйте этот тег и вставьте его сюда."
+echo "Отправьте этот секрет боту @MTProxybot."
+echo "Скопируйте полученный Proxy Tag и вставьте его сюда."
 echo "(Если хотите добавить тег позже, просто нажмите Enter)"
 echo ""
 read -p "Ваш Proxy Tag: " TAG
@@ -58,7 +53,7 @@ LINK="https://t.me/proxy?server=${IP}&port=443&secret=${SECRET}"
 
 echo ""
 echo "========================================="
-echo "✅ Готово! Ваш новый MTProto Proxy работает."
+echo "✅ Готово! Ваш чистый MTProto Proxy работает."
 echo "📎 Ссылка для подключения:"
 echo "   $LINK"
 echo "========================================="

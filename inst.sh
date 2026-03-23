@@ -14,7 +14,7 @@ if ! command -v docker &>/dev/null; then
 fi
 
 # 2. Очистка старых версий (чтобы освободить 443 порт)
-echo "🛑 Удаление старых контейнеров (mtg)..."
+echo "🛑 Удаление старых контейнеров (mtg, mtproxy)..."
 docker rm -f mtg mtproxy 2>/dev/null || true
 
 # 3. Генерация ключей
@@ -45,13 +45,13 @@ if [ -z "$TAG" ]; then
     docker run -d --name mtproxy --restart always -p 443:443 \
       -e SECRET="$SECRET" \
       -e WORKERS=2 \
-      telegrammessenger/mtproxy:latest >/dev/null
+      telegrammessenger/proxy:latest >/dev/null
 else
     docker run -d --name mtproxy --restart always -p 443:443 \
       -e SECRET="$SECRET" \
       -e TAG="$TAG" \
       -e WORKERS=2 \
-      telegrammessenger/mtproxy:latest >/dev/null
+      telegrammessenger/proxy:latest >/dev/null
 fi
 
 LINK="https://t.me/proxy?server=${IP}&port=443&secret=${SECRET}"

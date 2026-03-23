@@ -38,7 +38,7 @@ print_banner() {
     clear
     echo -e "${BOLD}"
     echo "╔══════════════════════════════════════════════════════╗"
-    echo "║        MTProto Proxy — Управление (mtg v2) V4           ║"
+    echo "║        MTProto Proxy — Управление (mtg v2)   v5         ║"
     echo "║        Fake TLS | Защита от РКН / DPI / ТСПУ         ║"
     echo "╚══════════════════════════════════════════════════════╝"
     echo -e "${NC}"
@@ -219,7 +219,7 @@ https://download.docker.com/linux/${OS_ID} $(lsb_release -cs) stable" \
 generate_secret() {
     info "Генерирую Fake TLS секрет для домена: $CLOAK_DOMAIN"
     # mtg v1: generate-secret tls --hex <domain>
-    SECRET=$(docker run --rm nineseconds/mtg:2 generate-secret --hex "$CLOAK_DOMAIN" 2>/dev/null)
+    SECRET=$(docker run --rm nineseconds/mtg:1 generate-secret tls -c "$CLOAK_DOMAIN" 2>/dev/null)
     if [[ -z "$SECRET" ]]; then
         error "Не удалось сгенерировать секрет. Проверьте подключение к Docker Hub."
     fi
@@ -270,22 +270,21 @@ start_proxy() {
     # mtg v1 используется для поддержки adtag (Proxy Tag)
     # mtg v2 удалил эту функцию
     # Образ: nineseconds/mtg:1 (последняя стабильная v1)
-    # v1: mtg run [flags] <secret> [adtag]
-    # adtag — второй позиционный аргумент после секрета
+    # v1: секрет и adtag — позиционные аргументы
+    # настройки — через переменные окружения (-e)
     DOCKER_ARGS=(
         run -d
         --name "$CONTAINER_NAME"
         --restart unless-stopped
         -p "${PORT}:${PORT}"
+        -e MTG_BIND="0.0.0.0:${PORT}"
+        -e MTG_IPV4="${PUBLIC_IP}"
+        -e MTG_IPV4_PORT="${PORT}"
         nineseconds/mtg:1
-        run
-        --prefer-ipv4
-        --bind "0.0.0.0:${PORT}"
-        --public-ipv4 "${PUBLIC_IP}:${PORT}"
         "$SECRET"
     )
 
-    # adtag передаётся вторым позиционным аргументом после секрета
+    # adtag — второй позиционный аргумент, только если задан
     [[ -n "${PROXY_TAG:-}" ]] && DOCKER_ARGS+=("$PROXY_TAG")
 
     docker "${DOCKER_ARGS[@]}"

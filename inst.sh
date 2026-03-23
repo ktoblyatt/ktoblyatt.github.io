@@ -102,6 +102,7 @@ action_install() {
     install_docker
     get_public_ip
     generate_secret
+    ask_proxy_tag
     configure_firewall
     start_proxy
     save_state
@@ -142,21 +143,37 @@ ask_install_params() {
     read -rp "$(echo -e "${CYAN}Домен для Fake TLS маскировки${NC} [${DEFAULT_CLOAK_DOMAIN}]: ")" INPUT_DOMAIN
     CLOAK_DOMAIN="${INPUT_DOMAIN:-$DEFAULT_CLOAK_DOMAIN}"
 
-    # Proxy Tag (опционально)
-    echo ""
-    echo -e "  ${YELLOW}Proxy Tag (опционально):${NC}"
-    echo "  Получите тег в @MTProxybot — отправьте боту IP:PORT, затем секрет."
-    echo "  За каждого пользователя, купившего Premium через ваш прокси,"
-    echo "  Telegram начисляет вам бесплатный Premium 🎁"
-    echo "  Оставьте пустым если тега ещё нет — можно добавить позже."
-    echo ""
-    read -rp "$(echo -e "${CYAN}Proxy Tag${NC} [пропустить]: ")" INPUT_TAG
-    PROXY_TAG="${INPUT_TAG:-}"
-
     echo ""
     info "Порт:           $PORT"
     info "Домен Fake TLS: $CLOAK_DOMAIN"
-    [[ -n "$PROXY_TAG" ]] && info "Proxy Tag:      $PROXY_TAG" || info "Proxy Tag:      (не задан)"
+    echo ""
+}
+
+# ─── Пауза для регистрации в @MTProxybot и ввод тега ─────────────────────────
+ask_proxy_tag() {
+    echo ""
+    echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "  ${BOLD}📌 Зарегистрируйте прокси в @MTProxybot и получите Proxy Tag${NC}"
+    echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+    echo -e "  Шаги:"
+    echo -e "  1. Откройте @MTProxybot в Telegram"
+    echo -e "  2. Отправьте боту: ${BOLD}${PUBLIC_IP}:${PORT}${NC}"
+    echo -e "  3. Бот попросит секрет — отправьте: ${GREEN}${BOLD}${BOT_SECRET}${NC}"
+    echo -e "     ${YELLOW}(это 32-символьная часть без префикса ee и домена)${NC}"
+    echo -e "  4. Бот выдаст Proxy Tag — скопируйте и вставьте ниже"
+    echo ""
+    echo -e "  ${CYAN}Оставьте пустым и нажмите Enter чтобы пропустить.${NC}"
+    echo ""
+    read -rp "$(echo -e "  ${BOLD}Proxy Tag:${NC} ")" INPUT_TAG
+    PROXY_TAG="${INPUT_TAG:-}"
+
+    if [[ -n "$PROXY_TAG" ]]; then
+        success "Proxy Tag принят: $PROXY_TAG"
+    else
+        warn "Proxy Tag не задан — прокси будет работать, но Premium начисляться не будет."
+        warn "Добавьте тег позже через переустановку (пункт 1 меню)."
+    fi
     echo ""
 }
 
@@ -205,7 +222,11 @@ generate_secret() {
     if [[ -z "$SECRET" ]]; then
         error "Не удалось сгенерировать секрет. Проверьте подключение к Docker Hub."
     fi
+    # Секрет mtg имеет формат: ee<32 hex символа><домен в hex>
+    # Для @MTProxybot нужны только 32 символа после префикса 'ee'
+    BOT_SECRET="${SECRET:2:32}"
     success "Секрет сгенерирован: $SECRET"
+    success "Секрет для @MTProxybot: $BOT_SECRET"
 }
 
 # ─── Определение внешнего IP ──────────────────────────────────────────────────
@@ -282,7 +303,7 @@ CLOAK_DOMAIN=$CLOAK_DOMAIN
 PUBLIC_IP=$PUBLIC_IP
 PROXY_TAG=${PROXY_TAG:-}
 CONTAINER_NAME=$CONTAINER_NAME
-INSTALLED_AT=$(date '+%Y-%m-%d %H:%M:%S')
+INSTALLED_AT="$(date '+%Y-%m-%d %H:%M:%S')"
 EOF
     chmod 600 "$STATE_FILE"
     success "Конфигурация сохранена в $STATE_FILE"
@@ -313,9 +334,10 @@ print_result() {
     echo ""
     echo -e "  ${BOLD}Сервер:${NC}  $PUBLIC_IP"
     echo -e "  ${BOLD}Порт:${NC}    $PORT"
-    echo -e "  ${BOLD}Секрет:${NC}  $SECRET"
-    echo -e "  ${BOLD}Тип:${NC}     MTProto + Fake TLS (→ $CLOAK_DOMAIN)"
-    [[ -n "${PROXY_TAG:-}" ]] && echo -e "  ${BOLD}Proxy Tag:${NC} $PROXY_TAG"
+    echo -e "  ${BOLD}Секрет (полный):${NC}    $SECRET"
+    echo -e "  ${BOLD}Секрет для бота:${NC}    ${BOT_SECRET:-${SECRET:2:32}}"
+    echo -e "  ${BOLD}Тип:${NC}                MTProto + Fake TLS (→ $CLOAK_DOMAIN)"
+    [[ -n "${PROXY_TAG:-}" ]] && echo -e "  ${BOLD}Proxy Tag:${NC}          $PROXY_TAG"
     echo ""
     echo -e "  ${BOLD}🔗 Ссылка для Telegram:${NC}"
     echo -e "  ${CYAN}$TG_URL${NC}"
@@ -331,7 +353,8 @@ print_result() {
         echo ""
         echo -e "  1. Откройте @MTProxybot в Telegram"
         echo -e "  2. Отправьте: ${BOLD}${PUBLIC_IP}:${PORT}${NC}"
-        echo -e "  3. Отправьте секрет: ${BOLD}${SECRET}${NC}"
+        echo -e "  3. Бот попросит секрет — отправьте: ${BOLD}${BOT_SECRET:-${SECRET:2:32}}${NC}"
+        echo -e "     ${YELLOW}(32 символа, без префикса ee и суффикса домена)${NC}"
         echo -e "  4. Бот выдаст Proxy Tag — скопируйте его"
         echo -e "  5. Запустите скрипт снова → пункт 1 → вставьте тег"
         echo -e "     После этого Telegram будет начислять вам Premium 🎁"
@@ -442,14 +465,16 @@ action_show_info() {
 
     echo -e "${BOLD}=== Данные вашего прокси ===${NC}"
     echo ""
-    echo -e "  ${BOLD}Сервер:${NC}      $PUBLIC_IP"
-    echo -e "  ${BOLD}Порт:${NC}        $PORT"
-    echo -e "  ${BOLD}Секрет:${NC}      $SECRET"
-    echo -e "  ${BOLD}Fake TLS:${NC}    $CLOAK_DOMAIN"
+    BOT_SECRET="${SECRET:2:32}"
+    echo -e "  ${BOLD}Сервер:${NC}           $PUBLIC_IP"
+    echo -e "  ${BOLD}Порт:${NC}             $PORT"
+    echo -e "  ${BOLD}Секрет (полный):${NC}  $SECRET"
+    echo -e "  ${BOLD}Секрет для бота:${NC}  $BOT_SECRET"
+    echo -e "  ${BOLD}Fake TLS:${NC}         $CLOAK_DOMAIN"
     [[ -n "${PROXY_TAG:-}" ]] \
-        && echo -e "  ${BOLD}Proxy Tag:${NC}   $PROXY_TAG" \
-        || echo -e "  ${BOLD}Proxy Tag:${NC}   ${YELLOW}не задан${NC} (получите в @MTProxybot)"
-    echo -e "  ${BOLD}Установлен:${NC}  ${INSTALLED_AT:-?}"
+        && echo -e "  ${BOLD}Proxy Tag:${NC}        $PROXY_TAG" \
+        || echo -e "  ${BOLD}Proxy Tag:${NC}        ${YELLOW}не задан${NC} (получите в @MTProxybot)"
+    echo -e "  ${BOLD}Установлен:${NC}       ${INSTALLED_AT:-?}"
     echo ""
     echo -e "  ${BOLD}🔗 Ссылка для Telegram:${NC}"
     echo -e "  ${CYAN}$TG_URL${NC}"
@@ -464,7 +489,8 @@ action_show_info() {
         echo ""
         echo -e "  1. Откройте @MTProxybot в Telegram"
         echo -e "  2. Отправьте: ${BOLD}${PUBLIC_IP}:${PORT}${NC}"
-        echo -e "  3. Отправьте секрет: ${BOLD}${SECRET}${NC}"
+        echo -e "  3. Бот попросит секрет — отправьте: ${BOLD}${BOT_SECRET}${NC}"
+        echo -e "     ${YELLOW}(32 символа, без префикса ee и суффикса домена)${NC}"
         echo -e "  4. Сохраните полученный тег"
         echo -e "  5. Пункт 1 меню → переустановка → введите тег"
         echo -e "  ${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"

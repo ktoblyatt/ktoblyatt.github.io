@@ -38,7 +38,7 @@ print_banner() {
     clear
     echo -e "${BOLD}"
     echo "╔══════════════════════════════════════════════════════╗"
-    echo "║        MTProto Proxy — Управление (mtg v2)   v5         ║"
+    echo "║        MTProto Proxy — Управление (mtg v2)  v6         ║"
     echo "║        Fake TLS | Защита от РКН / DPI / ТСПУ         ║"
     echo "╚══════════════════════════════════════════════════════╝"
     echo -e "${NC}"
@@ -137,14 +137,14 @@ ask_install_params() {
     echo ""
     echo -e "  ${YELLOW}Совет по домену Fake TLS:${NC}"
     echo "  Домен должен быть популярным HTTPS-сайтом."
-    echo "  Для VPS в РФ:   selectel.ru, timeweb.com, beget.com, vk.com"
+    echo "  Для VPS в РФ:    selectel.ru, timeweb.com, beget.com, vk.com"
     echo "  Для VPS вне РФ: www.microsoft.com, bing.com, yahoo.com"
     echo ""
     read -rp "$(echo -e "${CYAN}Домен для Fake TLS маскировки${NC} [${DEFAULT_CLOAK_DOMAIN}]: ")" INPUT_DOMAIN
     CLOAK_DOMAIN="${INPUT_DOMAIN:-$DEFAULT_CLOAK_DOMAIN}"
 
     echo ""
-    info "Порт:           $PORT"
+    info "Порт:            $PORT"
     info "Домен Fake TLS: $CLOAK_DOMAIN"
     echo ""
 }
@@ -281,6 +281,7 @@ start_proxy() {
         -e MTG_IPV4="${PUBLIC_IP}"
         -e MTG_IPV4_PORT="${PORT}"
         nineseconds/mtg:1
+        run
         "$SECRET"
     )
 
@@ -334,7 +335,7 @@ print_result() {
 
     echo ""
     echo -e "${GREEN}${BOLD}╔══════════════════════════════════════════════════════╗"
-    echo -e "║              ✅  ПРОКСИ ГОТОВ К РАБОТЕ              ║"
+    echo -e "║            ✅  ПРОКСИ ГОТОВ К РАБОТЕ              ║"
     echo -e "╚══════════════════════════════════════════════════════╝${NC}"
     echo ""
     echo -e "  ${BOLD}Сервер:${NC}  $PUBLIC_IP"
@@ -471,8 +472,8 @@ action_show_info() {
     echo -e "${BOLD}=== Данные вашего прокси ===${NC}"
     echo ""
     BOT_SECRET="${SECRET:2:32}"
-    echo -e "  ${BOLD}Сервер:${NC}           $PUBLIC_IP"
-    echo -e "  ${BOLD}Порт:${NC}             $PORT"
+    echo -e "  ${BOLD}Сервер:${NC}            $PUBLIC_IP"
+    echo -e "  ${BOLD}Порт:${NC}              $PORT"
     echo -e "  ${BOLD}Секрет (полный):${NC}  $SECRET"
     echo -e "  ${BOLD}Секрет для бота:${NC}  $BOT_SECRET"
     echo -e "  ${BOLD}Fake TLS:${NC}         $CLOAK_DOMAIN"

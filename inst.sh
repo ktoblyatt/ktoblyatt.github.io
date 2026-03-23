@@ -38,7 +38,7 @@ print_banner() {
     clear
     echo -e "${BOLD}"
     echo "╔══════════════════════════════════════════════════════╗"
-    echo "║        MTProto Proxy — Управление (mtg v2)           ║"
+    echo "║        MTProto Proxy — Управление (mtg v3422)           ║"
     echo "║        Fake TLS | Защита от РКН / DPI / ТСПУ         ║"
     echo "╚══════════════════════════════════════════════════════╝"
     echo -e "${NC}"

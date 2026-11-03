@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ULPR — Search</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+
+  <div class="app">
+
+    <header class="app-header">
+      <div class="logo">
+        <span class="logo-bracket">[</span>ULPR<span class="logo-bracket">]</span>
+      </div>
+      <div class="header-status" id="headerStatus"></div>
+    </header>
+
+    <main class="app-main">
+
+      <!-- Control Panel -->
+      <section class="panel control-panel">
+
+        <!-- Search row -->
+        <div class="field-row" id="requestCell">
+          <label class="field-label">Search</label>
+          <div class="field-body search-field-body">
+            <div class="search-input-wrap">
+              <input id="requestInput" type="text"
+                placeholder="query1 | query2 | query3…"
+                autocomplete="off" spellcheck="false">
+              <button class="regex-toggle" id="regexToggle" title="Toggle Regex mode">.*</button>
+            </div>
+            <button id="searchButton" class="btn-search" title="Search" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <span>Search</span>
+            </button>
+          </div>
+          <div id="historyDropdown" class="history-dropdown"></div>
+        </div>
+
+        <!-- Database row -->
+        <div class="field-row">
+          <label class="field-label">Database</label>
+          <div class="field-body db-field-body">
+            <span id="fileName" class="db-name">No file loaded</span>
+            <div class="db-actions">
+              <button id="downloadResultsButton" class="btn-icon" title="Download results" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </button>
+              <button id="uploadFolderButton" class="btn-icon" title="Upload folder">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              </button>
+              <button id="uploadFileButton" class="btn-icon btn-upload-primary" title="Upload file">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats row -->
+        <div class="field-row stats-row">
+          <label class="field-label">Stats</label>
+          <div class="field-body stats-body">
+            <div class="stat-chip">
+              <span class="stat-chip-label">Found</span>
+              <span class="stat-chip-value accent" id="fileSize">—</span>
+            </div>
+            <div class="stat-chip speed-chip" id="speedChip">
+              <span class="stat-chip-label">Speed</span>
+              <span class="stat-chip-value" id="CurrentSpeed">—</span>
+            </div>
+            <div class="stat-chip">
+              <span class="stat-chip-label">Time</span>
+              <span class="stat-chip-value" id="timeSpent">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="progress-bar-wrap" id="progressWrap">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <!-- Settings row -->
+        <div class="field-row settings-row">
+          <label class="field-label">Options</label>
+          <div class="field-body settings-body">
+            <label class="toggle-chip" title="Show file names when searching folder">
+              <input type="checkbox" id="showFileNames">
+              <span class="toggle-label">Debug</span>
+            </label>
+            <label class="toggle-chip">
+              <input type="checkbox" id="loginpass">
+              <span class="toggle-label">login:pass</span>
+            </label>
+            <label class="toggle-chip">
+              <input type="checkbox" id="mailpass">
+              <span class="toggle-label">email:pass</span>
+            </label>
+            <label class="toggle-chip">
+              <input type="checkbox" id="caseSensitive">
+              <span class="toggle-label">Case-sensitive</span>
+            </label>
+            <label class="toggle-chip">
+              <input type="checkbox" id="notFilter">
+              <span class="toggle-label">NOT filter</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- NOT filter input -->
+        <div class="field-row not-filter-row" id="notFilterRow">
+          <label class="field-label">Exclude</label>
+          <div class="field-body">
+            <input id="notFilterInput" type="text"
+              placeholder="term1 | term2 | /regex/…"
+              autocomplete="off" spellcheck="false"
+              class="not-input">
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Analysis Panel -->
+      <section class="panel stats-panel" id="statsPanel">
+        <div class="stats-panel-header">
+          <span class="panel-title">Analysis</span>
+          <button class="btn-close-panel" id="closeStatsBtn" title="Close">✕</button>
+        </div>
+        <div class="stats-grid" id="statsGrid"></div>
+      </section>
+
+      <!-- Results Panel -->
+      <section class="panel results-panel" id="inputPanel">
+        <div class="results-header">
+          <span class="panel-title">Results</span>
+          <div class="results-actions">
+            <button class="btn-text" id="analyzeBtn" title="Analyze results">Analyze</button>
+            <button class="btn-text" id="copyAllBtn" title="Copy all">Copy all</button>
+            <button class="btn-text danger" id="clearBtn" title="Clear">Clear</button>
+          </div>
+        </div>
+        <div class="code-editor" id="codeEditor">
+          <div id="lineNumbers" class="gutter">1</div>
+          <textarea id="bigInput" spellcheck="false" wrap="off" placeholder="Results will appear here…"></textarea>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="app-footer">
+      <span>[BETA] v17.03.2026</span>
+      <span class="footer-sep">·</span>
+      <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a>
+      <span class="footer-sep">·</span>
+      <a href="https://github.com/ulpr/ulpr.github.io/" target="_blank">ULPR on GitHub</a>
+    </footer>
+
+  </div>
+
+  <div id="dropOverlay">
+    <div class="drop-inner">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="64" height="64"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <span>Drop file to load</span>
+    </div>
+  </div>
+
+  <input type="file" id="fileInput" style="display:none">
+
+  <script src="js/worker-bridge.js"></script>
+  <script src="js/download-results.js"></script>
+  <script src="js/history.js"></script>
+  <script src="js/filters.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/uploads.js"></script>
+  <script src="js/drag-and-drop.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/stats.js"></script>
+  <script src="js/not-filter.js"></script>
+  <script src="js/line-copy.js"></script>
+</body>
+</html>
